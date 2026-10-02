@@ -5,9 +5,11 @@ In [week 1 you might have applied for the GitHub Student Developer Pack](https:/
 Note, if you don't have access to GitHub Copilot, you can still complete this assignment by using other LLMs like ChatGPT. However, the workflow will be slightly different as you won't have suggestions directly in your code editor. A TU Delft account gives you free access to [Microsoft Copilot](https://copilot.microsoft.com/) (different from GitHub Copilot). As with other LLMs which are not integrated into your programming environment, you will need to copy-paste code snippets. If you are using Microsoft Edge, you can sign in with your student account and use the built-in Copilot feature that is available in the sidebar.
 
 ## Task 1 Setup GitHub Copilot in VS Code
-Follow the instructions on [Visual Studio Code's website](https://code.visualstudio.com/docs/copilot/setup)
+
+Follow the instructions on [Visual Studio Code&#39;s website](https://code.visualstudio.com/docs/copilot/setup)
 
 ## Task 2 Verify GitHub Copilot is working
+
 You can test GitHub Copilot by chatting with it in the chat window.
 
 Let's start with:
@@ -34,6 +36,6 @@ Now let's try the inline-chat feature. Highlight some code and right-click 'Open
 
 ## Task 5.additional
 
-This is not required, but if you like a bit more practice before diving into the assignment, you can follow [GitHub's video tutorials](https://github.com/features/copilot/tutorials) and [Visual Studio Code's Quickstart](https://code.visualstudio.com/docs/copilot/getting-started), or if you're really into it, the full [GitHub's tutorials](https://docs.github.com/en/copilot)
+This is not required, but if you like a bit more practice before diving into the assignment, you can follow [GitHub&#39;s video tutorials](https://github.com/features/copilot/tutorials) and [Visual Studio Code&#39;s Quickstart](https://code.visualstudio.com/docs/copilot/getting-started), or if you're really into it, the full [GitHub&#39;s tutorials](https://docs.github.com/en/copilot)
 
 > By Tom van Woudenberg, Delft University of Technology. CC BY 4.0, more info [on the Credits page of Workbook](https://mude.citg.tudelft.nl/workbook-2025/credits.html).

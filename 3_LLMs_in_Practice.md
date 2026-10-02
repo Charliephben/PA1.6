@@ -5,6 +5,7 @@ In this assignment, you will create a thermostat program that controls the tempe
 Your goal is to use AI to help you write the code for the thermostat. This project introduces you to the typical workflow when working on larger programming projects that contain multiple files and modules. In these cases, copy-pasting code snippets is far less effective than working with an LLM integrated into your programming environment. We highly recommend using GitHub Copilot.
 
 ## Assignment Description
+
 A thermostat is a device that regulates the temperature of a system so that the system's temperature is maintained near a desired setpoint. The thermostat will control the temperature of a room by turning a heater on and off based on the current temperature and a desired setpoint. There are two main strategies for controlling the heater: a simple on/off controller and a predictive on/off controller. You will implement the on/off controller (the predictive on/off controller is implemented for you) and compare their performance. This requires you to implement some auxiliary functions in other modules as well.
 
 In this simulation, the room temperature is affected by the heater and the outside temperature. Moreover, there is a "door opening" event that substantially drops the temperature. You can control all of these factors in the scenario files located in the `scenarios` folder. Two example scenarios are provided already: `door_open.yaml` includes a door opening event using a simple onoff thermostat, and `cold_morning.yaml` provides an especially cold morning with a predictive onoff thermostat.
@@ -65,7 +66,7 @@ This controller should turn the heater on when the temperature is below the setp
 
 > Example prompt: "How does the onoff controller work and how can I implement it in Python?"
 
-## Task 3.additional Implement all auxiliary functions in the other modules. 
+## Task 3.additional Implement all auxiliary functions in the other modules.
 
 Implement all auxiliary functions in the other modules. Use AI to help you understand the purpose of each function and how to implement it.
 
@@ -75,7 +76,7 @@ Implement all auxiliary functions in the other modules. Use AI to help you under
 
 ## Task 4.additional Test your implementation
 
-Test your implementation by running the provided scenarios and checking the plots generated in the `outputs/figures` folder. 
+Test your implementation by running the provided scenarios and checking the plots generated in the `outputs/figures` folder.
 
 ## Task 5.6.additional Modify the scenarios
 

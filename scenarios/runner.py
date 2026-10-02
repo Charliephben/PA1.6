@@ -1,6 +1,8 @@
 import os
 import time
-from typing import Dict, List, Optional
+import csv
+from statistics import mean, stdev
+from typing import Dict, List, Optional, Tuple
 
 from utils.config import load_config
 from utils.rng import RNG
@@ -12,9 +14,8 @@ from simulations.room_model import step_room
 from simulations.environment import Environment
 from plotting.plots import plot_timeseries, plot_error, plot_duty, plot_predictive, plot_heater
 
-def run_scenario(scenario_path: str):
-    scenario = load_config(scenario_path)
-    rng = RNG(scenario.sim.seed)
+def _simulate(scenario, seed: int) -> Tuple[Dict[str, List[float]], bool]:
+    rng = RNG(seed)
 
     env = Environment(
         base=scenario.env.base,
@@ -96,7 +97,21 @@ def run_scenario(scenario_path: str):
         T = step_room(T, heater, T_out, scenario.model.R, scenario.model.C, scenario.model.P,
                       dt, scenario.model.process_sigma, rng)
 
-    # Write CSV
+    return log, use_predictive
+
+
+def _write_log(log: Dict[str, List[float]], csv_path: str):
+    with open(csv_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(log.keys())
+        for i in range(len(log["t"])):
+            writer.writerow(log[k][i] for k in log.keys())
+
+
+def run_scenario(scenario_path: str):
+    scenario = load_config(scenario_path)
+    log, use_predictive = _simulate(scenario, scenario.sim.seed)
+
     ts = time.strftime("%Y%m%d-%H%M%S")
     base = os.path.splitext(os.path.basename(scenario_path))[0]
     log_dir = os.path.join("outputs","logs")
@@ -104,12 +119,7 @@ def run_scenario(scenario_path: str):
     os.makedirs(log_dir, exist_ok=True)
     os.makedirs(fig_dir, exist_ok=True)
     csv_path = os.path.join(log_dir, f"{base}-{ts}.csv")
-    with open(csv_path, "w") as f:
-        header = ",".join(log.keys()) + "\n"
-        f.write(header)
-        for i in range(len(log["t"])):
-            row = ",".join(str(log[k][i]) for k in log.keys()) + "\n"
-            f.write(row)
+    _write_log(log, csv_path)
 
     # Plots
     plot_timeseries(log, os.path.join(fig_dir, f"{base}-temps-{ts}.png"))
@@ -121,3 +131,46 @@ def run_scenario(scenario_path: str):
 
     print(f"Wrote log to {csv_path}")
     print(f"Figures saved to {fig_dir}")
+
+
+def run_monte_carlo(scenario_path: str, runs: int):
+    """Run a scenario with multiple seeds and save per-run summary metrics."""
+    if runs < 1:
+        raise ValueError("runs must be at least 1")
+
+    scenario = load_config(scenario_path)
+    base = os.path.splitext(os.path.basename(scenario_path))[0]
+    log_dir = os.path.join("outputs", "logs")
+    os.makedirs(log_dir, exist_ok=True)
+    ts = time.strftime("%Y%m%d-%H%M%S")
+    summary_path = os.path.join(log_dir, f"{base}-monte-carlo-{ts}.csv")
+
+    summaries = []
+    for run_index in range(runs):
+        seed = scenario.sim.seed + run_index
+        log, _ = _simulate(scenario, seed)
+        errors = [abs(value) for value in log["error"]]
+        temperatures = log["T_true"]
+        heaters = log["heater"]
+        summaries.append({
+            "seed": seed,
+            "final_temperature": temperatures[-1],
+            "mean_abs_error": mean(errors),
+            "max_abs_error": max(errors),
+            "duty_cycle": mean(heaters),
+            "min_temperature": min(temperatures),
+            "max_temperature": max(temperatures),
+        })
+
+    with open(summary_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=summaries[0].keys())
+        writer.writeheader()
+        writer.writerows(summaries)
+
+    print(f"Wrote Monte Carlo summary to {summary_path}")
+    for metric in summaries[0]:
+        if metric == "seed":
+            continue
+        values = [summary[metric] for summary in summaries]
+        spread = stdev(values) if len(values) > 1 else 0.0
+        print(f"{metric}: mean={mean(values):.3f}, std={spread:.3f}")
